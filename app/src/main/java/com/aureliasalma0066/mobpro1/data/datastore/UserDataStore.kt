@@ -60,6 +60,8 @@ class UserDataStore(
         context.dataStore.edit {
 
             it[LOGIN_KEY] = false
+            it[NAME_KEY] = ""
+            it[EMAIL_KEY] = ""
         }
     }
 }

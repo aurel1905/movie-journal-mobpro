@@ -83,9 +83,10 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
 
-                        if (name.isBlank()) return@Button
-
-                        if (email.isBlank()) return@Button
+                        if (
+                            name.isBlank() ||
+                            email.isBlank()
+                        ) return@Button
 
                         viewModel.login(
                             name,

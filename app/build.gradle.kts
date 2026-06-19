@@ -20,22 +20,34 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =
+            "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+
         release {
+
             isMinifyEnabled = false
+
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile(
+                    "proguard-android-optimize.txt"
+                ),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+
+        sourceCompatibility =
+            JavaVersion.VERSION_11
+
+        targetCompatibility =
+            JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
     }
@@ -43,44 +55,99 @@ android {
 
 dependencies {
 
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(
+        platform(
+            libs.androidx.compose.bom
+        )
+    )
 
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(
+        libs.androidx.activity.compose
+    )
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(
+        libs.androidx.compose.material3
+    )
 
-    implementation(libs.androidx.navigation.compose)
+    implementation(
+        libs.androidx.compose.ui
+    )
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
+    implementation(
+        libs.androidx.compose.ui.graphics
+    )
 
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
+    implementation(
+        libs.androidx.compose.ui.tooling.preview
+    )
 
-    implementation(libs.coil.compose)
+    implementation(
+        libs.androidx.core.ktx
+    )
 
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(
+        libs.androidx.lifecycle.runtime.ktx
+    )
 
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.credentials)
+    implementation(
+        libs.androidx.navigation.compose
+    )
 
-    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(
+        libs.retrofit
+    )
 
-    implementation(libs.googleid)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+    implementation(
+        libs.retrofit.converter.moshi
+    )
 
-    testImplementation(libs.junit)
+    implementation(
+        libs.moshi
+    )
 
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
+    implementation(
+        libs.moshi.kotlin
+    )
 
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(
+        libs.coil.compose
+    )
+
+    implementation(
+        libs.androidx.lifecycle.viewmodel.compose
+    )
+
+    implementation(
+        libs.androidx.datastore.preferences
+    )
+
+    testImplementation(
+        libs.junit
+    )
+
+    androidTestImplementation(
+        platform(
+            libs.androidx.compose.bom
+        )
+    )
+
+    androidTestImplementation(
+        libs.androidx.compose.ui.test.junit4
+    )
+
+    androidTestImplementation(
+        libs.androidx.espresso.core
+    )
+
+    androidTestImplementation(
+        libs.androidx.junit
+    )
+
+    debugImplementation(
+        libs.androidx.compose.ui.test.manifest
+    )
+
+    debugImplementation(
+        libs.androidx.compose.ui.tooling
+    )
 }

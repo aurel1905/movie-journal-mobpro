@@ -58,15 +58,13 @@ fun ProfileScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray),
-                contentAlignment =
-                    Alignment.Center
+                    .background(Color.Gray),
+                contentAlignment = Alignment.Center
             ) {
-
                 Text(
-                    text = "👤",
-                    style =
-                        MaterialTheme.typography.headlineLarge
+                    text = name.take(1).uppercase(),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.White
                 )
             }
 
