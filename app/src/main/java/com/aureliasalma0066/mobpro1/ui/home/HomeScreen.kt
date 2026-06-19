@@ -14,6 +14,8 @@ import com.aureliasalma0066.mobpro1.viewmodel.FilmViewModel
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import com.aureliasalma0066.mobpro1.viewmodel.LoginViewModel
+import androidx.compose.ui.Alignment
+import com.aureliasalma0066.mobpro1.viewmodel.ApiStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +32,7 @@ fun HomeScreen(
 
     val films by filmViewModel.films.collectAsState()
 
-    val loading by filmViewModel.loading.collectAsState()
+    val status by filmViewModel.status.collectAsState()
 
     LaunchedEffect(email) {
 
@@ -86,115 +88,164 @@ fun HomeScreen(
                 modifier = Modifier.height(16.dp)
             )
 
-            if (loading) {
+            when (status) {
 
-                CircularProgressIndicator()
+                ApiStatus.LOADING -> {
 
-            } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
 
-                LazyColumn {
+                ApiStatus.FAILED -> {
 
-                    items(films) { film ->
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally,
+                        verticalArrangement =
+                            Arrangement.Center
+                    ) {
 
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
+                        Text(
+                            text =
+                                "Gagal memuat data.\nPeriksa koneksi internet."
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(16.dp)
+                        )
+
+                        Button(
+                            onClick = {
+
+                                filmViewModel.getFilms(
+                                    email
+                                )
+                            }
                         ) {
+                            Text("Coba Lagi")
+                        }
+                    }
+                }
 
-                            Column(
+                ApiStatus.SUCCESS -> {
+
+                    LazyColumn {
+
+                        items(films) { film ->
+
+                            Card(
                                 modifier = Modifier
-                                    .padding(16.dp)
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp)
                             ) {
-                                if (!film.image_url.isNullOrEmpty()) {
 
-                                    AsyncImage(
-                                        model = film.image_url,
-                                        contentDescription = film.title,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(200.dp),
-                                        contentScale = ContentScale.Crop
+                                Column(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                ) {
+
+                                    if (!film.image_url.isNullOrEmpty()) {
+
+                                        AsyncImage(
+                                            model = film.image_url,
+                                            contentDescription = film.title,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(200.dp),
+                                            contentScale =
+                                                ContentScale.Crop
+                                        )
+
+                                        Spacer(
+                                            modifier =
+                                                Modifier.height(8.dp)
+                                        )
+                                    }
+
+                                    Text(
+                                        text = film.title
+                                    )
+
+                                    Text(
+                                        text = film.review
+                                    )
+
+                                    Text(
+                                        text =
+                                            "Rating: ${film.rating}"
                                     )
 
                                     Spacer(
-                                        modifier = Modifier.height(8.dp)
+                                        modifier =
+                                            Modifier.height(8.dp)
                                     )
-                                }
 
-                                Text(
-                                    text = film.title
-                                )
-
-                                Text(
-                                    text = film.review
-                                )
-
-                                Text(
-                                    text = "Rating: ${film.rating}"
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.height(8.dp)
-                                )
-
-                                var showDialog by remember {
-                                    mutableStateOf(false)
-                                }
-
-                                Button(
-                                    onClick = {
-                                        showDialog = true
+                                    var showDialog by remember {
+                                        mutableStateOf(false)
                                     }
-                                ) {
-                                    Text("Hapus")
-                                }
-                                if (showDialog) {
 
-                                    AlertDialog(
-                                        onDismissRequest = {
-                                            showDialog = false
-                                        },
-
-                                        title = {
-                                            Text("Konfirmasi")
-                                        },
-
-                                        text = {
-                                            Text("Yakin ingin menghapus film ini?")
-                                        },
-
-                                        confirmButton = {
-
-                                            TextButton(
-                                                onClick = {
-
-                                                    film.id?.let {
-
-                                                        filmViewModel.deleteFilm(
-                                                            it,
-                                                            film.user_id
-                                                        )
-                                                    }
-
-                                                    showDialog = false
-                                                }
-                                            ) {
-                                                Text("Ya")
-                                            }
-                                        },
-
-                                        dismissButton = {
-
-                                            TextButton(
-                                                onClick = {
-                                                    showDialog = false
-                                                }
-                                            ) {
-                                                Text("Tidak")
-                                            }
+                                    Button(
+                                        onClick = {
+                                            showDialog = true
                                         }
-                                    )
+                                    ) {
+                                        Text("Hapus")
+                                    }
+
+                                    if (showDialog) {
+
+                                        AlertDialog(
+                                            onDismissRequest = {
+                                                showDialog = false
+                                            },
+
+                                            title = {
+                                                Text("Konfirmasi")
+                                            },
+
+                                            text = {
+                                                Text(
+                                                    "Yakin ingin menghapus film ini?"
+                                                )
+                                            },
+
+                                            confirmButton = {
+
+                                                TextButton(
+                                                    onClick = {
+
+                                                        film.id?.let {
+
+                                                            filmViewModel.deleteFilm(
+                                                                it,
+                                                                film.user_id
+                                                            )
+                                                        }
+
+                                                        showDialog = false
+                                                    }
+                                                ) {
+                                                    Text("Ya")
+                                                }
+                                            },
+
+                                            dismissButton = {
+
+                                                TextButton(
+                                                    onClick = {
+                                                        showDialog = false
+                                                    }
+                                                ) {
+                                                    Text("Tidak")
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }

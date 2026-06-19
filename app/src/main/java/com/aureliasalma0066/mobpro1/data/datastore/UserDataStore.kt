@@ -25,6 +25,9 @@ class UserDataStore(
 
         val EMAIL_KEY =
             stringPreferencesKey("email")
+
+        val PHOTO_KEY =
+            stringPreferencesKey("photo")
     }
 
     val loginFlow =
@@ -42,6 +45,11 @@ class UserDataStore(
             it[EMAIL_KEY] ?: ""
         }
 
+    val photoFlow =
+        context.dataStore.data.map {
+            it[PHOTO_KEY] ?: ""
+        }
+
     suspend fun saveUser(
         name: String,
         email: String
@@ -55,6 +63,16 @@ class UserDataStore(
         }
     }
 
+    suspend fun savePhoto(
+        photo: String
+    ) {
+
+        context.dataStore.edit {
+
+            it[PHOTO_KEY] = photo
+        }
+    }
+
     suspend fun logout() {
 
         context.dataStore.edit {
@@ -62,6 +80,7 @@ class UserDataStore(
             it[LOGIN_KEY] = false
             it[NAME_KEY] = ""
             it[EMAIL_KEY] = ""
+            it[PHOTO_KEY] = ""
         }
     }
 }

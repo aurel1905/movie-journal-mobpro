@@ -36,6 +36,13 @@ class LoginViewModel(
             ""
         )
 
+    val photo =
+        datastore.photoFlow.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            ""
+        )
+
     fun login(
         name: String,
         email: String
@@ -46,6 +53,18 @@ class LoginViewModel(
             datastore.saveUser(
                 name,
                 email
+            )
+        }
+    }
+
+    fun savePhoto(
+        photo: String
+    ) {
+
+        viewModelScope.launch {
+
+            datastore.savePhoto(
+                photo
             )
         }
     }
