@@ -5,10 +5,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aureliasalma0066.mobpro1.viewmodel.ApiStatus
 import com.aureliasalma0066.mobpro1.viewmodel.FilmViewModel
 import com.aureliasalma0066.mobpro1.viewmodel.LoginViewModel
 
@@ -22,13 +24,17 @@ fun HomeScreen(
     val loginViewModel: LoginViewModel = viewModel()
 
     val films by filmViewModel.films.collectAsState()
-    val loading by filmViewModel.loading.collectAsState()
 
-    val email by loginViewModel.email.collectAsState()
+    val status by
+    filmViewModel.status.collectAsState()
+
+    val email by
+    loginViewModel.email.collectAsState()
 
     LaunchedEffect(email) {
 
         if (email.isNotBlank()) {
+
             filmViewModel.getFilms(email)
         }
     }
@@ -77,52 +83,102 @@ fun HomeScreen(
                 modifier = Modifier.height(16.dp)
             )
 
-            if (loading) {
+            when (status) {
 
-                CircularProgressIndicator()
+                ApiStatus.LOADING -> {
 
-            } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment =
+                            Alignment.Center
+                    ) {
 
-                LazyColumn {
+                        CircularProgressIndicator()
+                    }
+                }
 
-                    items(films) { film ->
+                ApiStatus.FAILED -> {
 
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally,
+                        verticalArrangement =
+                            Arrangement.Center
+                    ) {
+
+                        Text(
+                            text =
+                                "Gagal memuat data.\nPeriksa koneksi internet."
+                        )
+
+                        Spacer(
+                            modifier =
+                                Modifier.height(16.dp)
+                        )
+
+                        Button(
+                            onClick = {
+
+                                filmViewModel.getFilms(
+                                    email
+                                )
+                            }
                         ) {
+                            Text("Coba Lagi")
+                        }
+                    }
+                }
 
-                            Column(
+                ApiStatus.SUCCESS -> {
+
+                    LazyColumn {
+
+                        items(films) { film ->
+
+                            Card(
                                 modifier = Modifier
-                                    .padding(16.dp)
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp)
                             ) {
 
-                                Text(film.title)
-
-                                Text(film.review)
-
-                                Text(
-                                    "Rating: ${film.rating}"
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.height(8.dp)
-                                )
-
-                                Button(
-                                    onClick = {
-
-                                        film.id?.let {
-
-                                            filmViewModel.deleteFilm(
-                                                it,
-                                                film.user_id
-                                            )
-                                        }
-                                    }
+                                Column(
+                                    modifier = Modifier
+                                        .padding(16.dp)
                                 ) {
-                                    Text("Hapus")
+
+                                    Text(
+                                        text = film.title
+                                    )
+
+                                    Text(
+                                        text = film.review
+                                    )
+
+                                    Text(
+                                        text =
+                                            "Rating: ${film.rating}"
+                                    )
+
+                                    Spacer(
+                                        modifier =
+                                            Modifier.height(8.dp)
+                                    )
+
+                                    Button(
+                                        onClick = {
+
+                                            film.id?.let {
+
+                                                filmViewModel.deleteFilm(
+                                                    it,
+                                                    film.user_id
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        Text("Hapus")
+                                    }
                                 }
                             }
                         }

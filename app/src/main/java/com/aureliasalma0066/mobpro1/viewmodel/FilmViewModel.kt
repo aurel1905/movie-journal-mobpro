@@ -15,12 +15,20 @@ class FilmViewModel : ViewModel() {
     private val _films =
         MutableStateFlow<List<Film>>(emptyList())
 
-    val films: StateFlow<List<Film>> = _films
+    val films: StateFlow<List<Film>> =
+        _films
 
     private val _loading =
         MutableStateFlow(false)
 
-    val loading: StateFlow<Boolean> = _loading
+    val loading: StateFlow<Boolean> =
+        _loading
+
+    private val _status =
+        MutableStateFlow(ApiStatus.LOADING)
+
+    val status: StateFlow<ApiStatus> =
+        _status
 
     fun getFilms(userId: String) {
 
@@ -29,17 +37,25 @@ class FilmViewModel : ViewModel() {
             try {
 
                 _loading.value = true
+                _status.value = ApiStatus.LOADING
 
                 val result =
                     ApiClient.api.getFilms(
                         apiKey = Constants.API_KEY,
-                        authorization = "Bearer ${Constants.API_KEY}",
+                        authorization =
+                            "Bearer ${Constants.API_KEY}",
                         userId = "eq.$userId"
                     )
 
                 _films.value = result
 
+                _status.value =
+                    ApiStatus.SUCCESS
+
             } catch (e: Exception) {
+
+                _status.value =
+                    ApiStatus.FAILED
 
                 Log.e(
                     "SUPABASE",
@@ -47,9 +63,11 @@ class FilmViewModel : ViewModel() {
                 )
 
                 e.printStackTrace()
-            }
 
-            _loading.value = false
+            } finally {
+
+                _loading.value = false
+            }
         }
     }
 
@@ -62,11 +80,6 @@ class FilmViewModel : ViewModel() {
             try {
 
                 _loading.value = true
-
-                android.util.Log.d(
-                    "SUPABASE",
-                    "Kirim data: $film"
-                )
 
                 val response =
                     ApiClient.api.addFilm(
@@ -81,29 +94,21 @@ class FilmViewModel : ViewModel() {
                     "CODE = ${response.code()}"
                 )
 
-                Log.d(
-                    "SUPABASE",
-                    "SUCCESS = ${response.isSuccessful}"
-                )
-
-                Log.d(
-                    "SUPABASE",
-                    "BODY = ${response.body()}"
-                )
-
                 getFilms(film.user_id)
 
             } catch (e: Exception) {
 
-                android.util.Log.e(
+                Log.e(
                     "SUPABASE",
                     e.toString()
                 )
 
                 e.printStackTrace()
-            }
 
-            _loading.value = false
+            } finally {
+
+                _loading.value = false
+            }
         }
     }
 
@@ -118,7 +123,8 @@ class FilmViewModel : ViewModel() {
 
                 ApiClient.api.deleteFilm(
                     apiKey = Constants.API_KEY,
-                    authorization = "Bearer ${Constants.API_KEY}",
+                    authorization =
+                        "Bearer ${Constants.API_KEY}",
                     id = "eq.$id"
                 )
 

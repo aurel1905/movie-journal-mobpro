@@ -67,6 +67,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.credentials)
+
+    implementation(libs.androidx.credentials.play.services.auth)
+
+    implementation(libs.googleid)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
 
     testImplementation(libs.junit)
 
