@@ -1,5 +1,6 @@
 package com.aureliasalma0066.mobpro1.ui.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.aureliasalma0066.mobpro1.R
 import com.aureliasalma0066.mobpro1.viewmodel.LoginViewModel
 
 @Composable
@@ -33,12 +36,12 @@ fun ProfileScreen(
     val email by
     loginViewModel.email.collectAsState()
 
-    Scaffold {
+    Scaffold { padding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
                 .padding(24.dp),
             horizontalAlignment =
                 Alignment.CenterHorizontally
@@ -58,13 +61,17 @@ fun ProfileScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray),
-                contentAlignment = Alignment.Center
+                    .background(Color.LightGray),
+                contentAlignment =
+                    Alignment.Center
             ) {
-                Text(
-                    text = name.take(1).uppercase(),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.White
+
+                Image(
+                    painter = painterResource(
+                        id = R.drawable.ic_profile
+                    ),
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(80.dp)
                 )
             }
 
@@ -73,7 +80,9 @@ fun ProfileScreen(
             )
 
             Text(
-                text = name
+                text = name,
+                style =
+                    MaterialTheme.typography.titleLarge
             )
 
             Spacer(
@@ -93,7 +102,9 @@ fun ProfileScreen(
 
                     loginViewModel.logout()
 
-                    navController.navigate("login") {
+                    navController.navigate(
+                        "login"
+                    ) {
                         popUpTo(0)
                     }
                 }

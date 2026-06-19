@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -22,6 +23,10 @@ fun LoginScreen(
     }
 
     var email by remember {
+        mutableStateOf("")
+    }
+
+    var errorMessage by remember {
         mutableStateOf("")
     }
 
@@ -76,26 +81,58 @@ fun LoginScreen(
                 )
 
                 Spacer(
-                    modifier = Modifier.height(24.dp)
+                    modifier = Modifier.height(8.dp)
                 )
+
+                if (errorMessage.isNotEmpty()) {
+
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+                }
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
 
-                        if (
-                            name.isBlank() ||
-                            email.isBlank()
-                        ) return@Button
+                        when {
 
-                        viewModel.login(
-                            name,
-                            email
-                        )
+                            name.isBlank() -> {
+                                errorMessage =
+                                    "Nama harus diisi"
+                            }
 
-                        navController.navigate("home") {
-                            popUpTo("login") {
-                                inclusive = true
+                            email.isBlank() -> {
+                                errorMessage =
+                                    "Email harus diisi"
+                            }
+
+                            !email.endsWith("@gmail.com") -> {
+                                errorMessage =
+                                    "Gunakan email Gmail"
+                            }
+
+                            else -> {
+
+                                errorMessage = ""
+
+                                viewModel.login(
+                                    name,
+                                    email
+                                )
+
+                                navController.navigate(
+                                    "home"
+                                ) {
+                                    popUpTo("login") {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
                     }

@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -44,6 +45,14 @@ fun UploadScreen(
     }
 
     var rating by remember {
+        mutableStateOf("")
+    }
+
+    var imageUrl by remember {
+        mutableStateOf("")
+    }
+
+    var errorMessage by remember {
         mutableStateOf("")
     }
 
@@ -107,29 +116,79 @@ fun UploadScreen(
             )
 
             Spacer(
-                modifier = Modifier.height(24.dp)
+                modifier = Modifier.height(12.dp)
             )
+
+            OutlinedTextField(
+                value = imageUrl,
+                onValueChange = {
+                    imageUrl = it
+                },
+                label = {
+                    Text("URL Gambar")
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
+            if (errorMessage.isNotEmpty()) {
+
+                Text(
+                    text = errorMessage,
+                    color = Color.Red
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+            }
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
 
-                    if (title.isBlank()) return@Button
-                    if (review.isBlank()) return@Button
-                    if (rating.isBlank()) return@Button
-                    if (email.isBlank()) return@Button
+                    when {
 
-                    filmViewModel.addFilm(
-                        Film(
-                            user_id = email,
-                            title = title,
-                            review = review,
-                            rating = rating.toIntOrNull() ?: 0,
-                            image_url = null
-                        )
-                    )
+                        title.isBlank() -> {
+                            errorMessage =
+                                "Judul film harus diisi"
+                        }
 
-                    navController.popBackStack()
+                        review.isBlank() -> {
+                            errorMessage =
+                                "Review harus diisi"
+                        }
+
+                        rating.isBlank() -> {
+                            errorMessage =
+                                "Rating harus diisi"
+                        }
+
+                        imageUrl.isBlank() -> {
+                            errorMessage =
+                                "URL gambar harus diisi"
+                        }
+
+                        else -> {
+
+                            errorMessage = ""
+
+                            filmViewModel.addFilm(
+                                Film(
+                                    user_id = email,
+                                    title = title,
+                                    review = review,
+                                    rating = rating.toIntOrNull() ?: 0,
+                                    image_url = imageUrl
+                                )
+                            )
+
+                            navController.popBackStack()
+                        }
+                    }
                 }
             ) {
                 Text("Simpan Film")
