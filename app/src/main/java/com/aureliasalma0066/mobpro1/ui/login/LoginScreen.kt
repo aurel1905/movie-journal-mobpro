@@ -39,105 +39,175 @@ fun LoginScreen(
             contentAlignment = Alignment.Center
         ) {
 
-            Column(
+            ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp)
+                    .padding(24.dp),
+
+                elevation = CardDefaults
+                    .elevatedCardElevation(
+                        defaultElevation = 8.dp
+                    )
             ) {
 
-                Text(
-                    text = "🎬 Movie Journal",
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
 
-                Spacer(
-                    modifier = Modifier.height(24.dp)
-                )
-
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = {
-                        name = it
-                    },
-                    label = {
-                        Text("Nama")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(
-                    modifier = Modifier.height(12.dp)
-                )
-
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = {
-                        email = it
-                    },
-                    label = {
-                        Text("Email")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-
-                if (errorMessage.isNotEmpty()) {
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally
+                ) {
 
                     Text(
-                        text = errorMessage,
-                        color = Color.Red
+                        text = "🎬",
+                        style = MaterialTheme
+                            .typography
+                            .displayLarge
                     )
 
                     Spacer(
                         modifier = Modifier.height(8.dp)
                     )
-                }
 
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
+                    Text(
+                        text = "Movie Journal",
+                        style = MaterialTheme
+                            .typography
+                            .headlineMedium
+                    )
 
-                        when {
+                    Text(
+                        text =
+                            "Catat film favoritmu dengan mudah",
+                        style = MaterialTheme
+                            .typography
+                            .bodyMedium,
+                        color =
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-                            name.isBlank() -> {
-                                errorMessage =
-                                    "Nama harus diisi"
-                            }
+                    Spacer(
+                        modifier = Modifier.height(32.dp)
+                    )
 
-                            email.isBlank() -> {
-                                errorMessage =
-                                    "Email harus diisi"
-                            }
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = {
+                            name = it
+                        },
+                        label = {
+                            Text("Nama")
+                        },
+                        modifier =
+                            Modifier.fillMaxWidth(),
 
-                            !email.endsWith("@gmail.com") -> {
-                                errorMessage =
-                                    "Gunakan email Gmail"
-                            }
+                        singleLine = true
+                    )
 
-                            else -> {
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
 
-                                errorMessage = ""
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = {
+                            email = it
+                        },
+                        label = {
+                            Text("Email Gmail")
+                        },
+                        modifier =
+                            Modifier.fillMaxWidth(),
 
-                                viewModel.login(
-                                    name,
-                                    email
+                        singleLine = true
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    if (errorMessage.isNotEmpty()) {
+
+                        Card(
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor =
+                                        MaterialTheme
+                                            .colorScheme
+                                            .errorContainer
                                 )
+                        ) {
 
-                                navController.navigate(
-                                    "home"
-                                ) {
-                                    popUpTo("login") {
-                                        inclusive = true
+                            Text(
+                                text = errorMessage,
+                                color =
+                                    MaterialTheme
+                                        .colorScheme
+                                        .error,
+                                modifier =
+                                    Modifier.padding(
+                                        12.dp
+                                    )
+                            )
+                        }
+
+                        Spacer(
+                            modifier =
+                                Modifier.height(12.dp)
+                        )
+                    }
+
+                    Button(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+
+                        onClick = {
+
+                            when {
+
+                                name.isBlank() -> {
+                                    errorMessage =
+                                        "Nama harus diisi"
+                                }
+
+                                email.isBlank() -> {
+                                    errorMessage =
+                                        "Email harus diisi"
+                                }
+
+                                !email.endsWith("@gmail.com") -> {
+                                    errorMessage =
+                                        "Gunakan email Gmail"
+                                }
+
+                                else -> {
+
+                                    errorMessage = ""
+
+                                    viewModel.login(
+                                        name,
+                                        email
+                                    )
+
+                                    navController.navigate(
+                                        "home"
+                                    ) {
+                                        popUpTo("login") {
+                                            inclusive = true
+                                        }
                                     }
                                 }
                             }
                         }
+                    ) {
+
+                        Text(
+                            text = "Masuk"
+                        )
                     }
-                ) {
-                    Text("Login")
                 }
             }
         }
