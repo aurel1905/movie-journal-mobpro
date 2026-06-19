@@ -30,4 +30,12 @@ interface ApiService {
         @Header("Authorization") authorization: String,
         @Query("id") id: String
     ): Response<Unit>
+
+    @PATCH("films")
+    suspend fun updateFilm(
+        @Header("apikey") apiKey: String,
+        @Header("Authorization") authorization: String,
+        @Query("id") id: String,
+        @Body film: Film
+    ): Response<Unit>
 }

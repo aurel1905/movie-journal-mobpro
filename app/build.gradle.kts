@@ -80,6 +80,7 @@ dependencies {
     implementation(
         libs.androidx.compose.ui.tooling.preview
     )
+    implementation("androidx.compose.material:material-icons-extended")
 
     implementation(
         libs.androidx.core.ktx

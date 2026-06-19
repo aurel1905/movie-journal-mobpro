@@ -141,4 +141,35 @@ class FilmViewModel : ViewModel() {
             }
         }
     }
+    fun updateFilm(
+        id: Long,
+        film: Film
+    ) {
+
+        viewModelScope.launch {
+
+            try {
+
+                _loading.value = true
+
+                ApiClient.api.updateFilm(
+                    apiKey = Constants.API_KEY,
+                    authorization =
+                        "Bearer ${Constants.API_KEY}",
+                    id = "eq.$id",
+                    film = film
+                )
+
+                getFilms(film.user_id)
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+
+            } finally {
+
+                _loading.value = false
+            }
+        }
+    }
 }

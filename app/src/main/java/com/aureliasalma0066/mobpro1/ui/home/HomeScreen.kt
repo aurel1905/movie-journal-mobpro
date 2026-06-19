@@ -3,19 +3,21 @@ package com.aureliasalma0066.mobpro1.ui.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aureliasalma0066.mobpro1.viewmodel.FilmViewModel
 import coil.compose.AsyncImage
-import androidx.compose.ui.layout.ContentScale
-import com.aureliasalma0066.mobpro1.viewmodel.LoginViewModel
-import androidx.compose.ui.Alignment
 import com.aureliasalma0066.mobpro1.viewmodel.ApiStatus
+import com.aureliasalma0066.mobpro1.viewmodel.FilmViewModel
+import com.aureliasalma0066.mobpro1.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,13 +47,45 @@ fun HomeScreen(
     }
 
     Scaffold(
+
         topBar = {
+
             TopAppBar(
+
                 title = {
-                    Text("Movie Journal")
+                    Text("🎬 Movie Journal")
+                },
+
+                actions = {
+
+                    IconButton(
+                        onClick = {
+                            navController.navigate("profile")
+                        }
+                    ) {
+
+                        Icon(
+                            imageVector =
+                                Icons.Default.AccountCircle,
+                            contentDescription =
+                                "Profile"
+                        )
+                    }
                 }
             )
+        },
+
+        floatingActionButton = {
+
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("upload")
+                }
+            ) {
+                Text("+")
+            }
         }
+
     ) { padding ->
 
         Column(
@@ -61,28 +95,19 @@ fun HomeScreen(
                 .padding(16.dp)
         ) {
 
-            Row {
+            Text(
+                text =
+                    "Halo, ${email.substringBefore("@")} 👋",
+                style =
+                    MaterialTheme.typography.headlineSmall
+            )
 
-                Button(
-                    onClick = {
-                        navController.navigate("profile")
-                    }
-                ) {
-                    Text("Profile")
-                }
-
-                Spacer(
-                    modifier = Modifier.width(8.dp)
-                )
-
-                Button(
-                    onClick = {
-                        navController.navigate("upload")
-                    }
-                ) {
-                    Text("Tambah")
-                }
-            }
+            Text(
+                text =
+                    "Catat dan kelola review film favoritmu",
+                style =
+                    MaterialTheme.typography.bodyMedium
+            )
 
             Spacer(
                 modifier = Modifier.height(16.dp)
@@ -93,9 +118,12 @@ fun HomeScreen(
                 ApiStatus.LOADING -> {
 
                     Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier.fillMaxSize(),
+                        contentAlignment =
+                            Alignment.Center
                     ) {
+
                         CircularProgressIndicator()
                     }
                 }
@@ -103,9 +131,12 @@ fun HomeScreen(
                 ApiStatus.FAILED -> {
 
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier =
+                            Modifier.fillMaxSize(),
+
                         horizontalAlignment =
                             Alignment.CenterHorizontally,
+
                         verticalArrangement =
                             Arrangement.Center
                     ) {
@@ -116,7 +147,8 @@ fun HomeScreen(
                         )
 
                         Spacer(
-                            modifier = Modifier.height(16.dp)
+                            modifier =
+                                Modifier.height(16.dp)
                         )
 
                         Button(
@@ -138,10 +170,22 @@ fun HomeScreen(
 
                         items(films) { film ->
 
+                            var showDialog by remember {
+                                mutableStateOf(false)
+                            }
+
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 8.dp)
+                                    .padding(
+                                        bottom = 12.dp
+                                    ),
+
+                                elevation =
+                                    CardDefaults.cardElevation(
+                                        defaultElevation =
+                                            6.dp
+                                    )
                             ) {
 
                                 Column(
@@ -149,102 +193,159 @@ fun HomeScreen(
                                         .padding(16.dp)
                                 ) {
 
-                                    if (!film.image_url.isNullOrEmpty()) {
+                                    if (
+                                        !film.image_url
+                                            .isNullOrEmpty()
+                                    ) {
 
                                         AsyncImage(
-                                            model = film.image_url,
-                                            contentDescription = film.title,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(200.dp),
+                                            model =
+                                                film.image_url,
+
+                                            contentDescription =
+                                                film.title,
+
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .height(
+                                                        200.dp
+                                                    ),
+
                                             contentScale =
                                                 ContentScale.Crop
                                         )
 
                                         Spacer(
                                             modifier =
-                                                Modifier.height(8.dp)
+                                                Modifier.height(
+                                                    12.dp
+                                                )
                                         )
                                     }
 
                                     Text(
-                                        text = film.title
-                                    )
-
-                                    Text(
-                                        text = film.review
-                                    )
-
-                                    Text(
                                         text =
-                                            "Rating: ${film.rating}"
+                                            film.title,
+
+                                        style =
+                                            MaterialTheme
+                                                .typography
+                                                .titleLarge
                                     )
 
                                     Spacer(
                                         modifier =
-                                            Modifier.height(8.dp)
+                                            Modifier.height(
+                                                4.dp
+                                            )
                                     )
 
-                                    var showDialog by remember {
-                                        mutableStateOf(false)
-                                    }
+                                    Text(
+                                        text =
+                                            film.review
+                                    )
 
-                                    Button(
-                                        onClick = {
-                                            showDialog = true
-                                        }
+                                    Spacer(
+                                        modifier =
+                                            Modifier.height(
+                                                8.dp
+                                            )
+                                    )
+
+                                    Text(
+                                        text = "⭐ ${film.rating}"
+                                    )
+
+                                    Spacer(
+                                        modifier =
+                                            Modifier.height(
+                                                12.dp
+                                            )
+                                    )
+                                    Row(
+                                        horizontalArrangement =
+                                            Arrangement.spacedBy(8.dp)
                                     ) {
-                                        Text("Hapus")
-                                    }
 
-                                    if (showDialog) {
+                                        OutlinedButton(
+                                            modifier = Modifier.weight(1f),
+                                            onClick = {
 
-                                        AlertDialog(
-                                            onDismissRequest = {
-                                                showDialog = false
-                                            },
-
-                                            title = {
-                                                Text("Konfirmasi")
-                                            },
-
-                                            text = {
-                                                Text(
-                                                    "Yakin ingin menghapus film ini?"
+                                                navController.navigate(
+                                                    "edit/${film.id}"
                                                 )
-                                            },
-
-                                            confirmButton = {
-
-                                                TextButton(
-                                                    onClick = {
-
-                                                        film.id?.let {
-
-                                                            filmViewModel.deleteFilm(
-                                                                it,
-                                                                film.user_id
-                                                            )
-                                                        }
-
-                                                        showDialog = false
-                                                    }
-                                                ) {
-                                                    Text("Ya")
-                                                }
-                                            },
-
-                                            dismissButton = {
-
-                                                TextButton(
-                                                    onClick = {
-                                                        showDialog = false
-                                                    }
-                                                ) {
-                                                    Text("Tidak")
-                                                }
                                             }
-                                        )
+                                        ) {
+                                            Text("Edit")
+                                        }
+
+                                        Button(
+                                            modifier =
+                                                Modifier.weight(1f),
+                                            onClick = {
+                                                showDialog = true
+                                            }
+                                        ) {
+                                            Text("Hapus")
+                                        }
+
+                                        if (showDialog) {
+
+                                            AlertDialog(
+
+                                                onDismissRequest = {
+                                                    showDialog =
+                                                        false
+                                                },
+
+                                                title = {
+                                                    Text(
+                                                        "Konfirmasi"
+                                                    )
+                                                },
+
+                                                text = {
+                                                    Text(
+                                                        "Yakin ingin menghapus film ini?"
+                                                    )
+                                                },
+
+                                                confirmButton = {
+
+                                                    TextButton(
+                                                        onClick = {
+
+                                                            film.id?.let {
+
+                                                                filmViewModel.deleteFilm(
+                                                                    it,
+                                                                    film.user_id
+                                                                )
+                                                            }
+
+                                                            showDialog =
+                                                                false
+                                                        }
+                                                    ) {
+                                                        Text("Ya")
+                                                    }
+                                                },
+
+                                                dismissButton = {
+
+                                                    TextButton(
+                                                        onClick = {
+
+                                                            showDialog =
+                                                                false
+                                                        }
+                                                    ) {
+                                                        Text("Tidak")
+                                                    }
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
